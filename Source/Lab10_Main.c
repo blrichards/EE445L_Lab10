@@ -1,4 +1,4 @@
-// ******** Lab3_Main.c **************
+// ******** Lab10_Main.c **************
 // Authors: Ryan Mitchell and Ben Richards
 // Initial Creation Date: 9/18/18
 // Description: Main file for Lab 3
@@ -29,7 +29,6 @@ long StartCritical(void); // previous I bit, disable interrupts
 void EndCritical(long sr); // restore I bit to previous value
 void WaitForInterrupt(void); // low power mode
 
-/*
 int main(void)
 {
 	PLL_Init(Bus80MHz); // 80 MHz
@@ -49,4 +48,4 @@ int main(void)
 		PF1 ^= 0x02; // toggles when running in main
     }
 }
-*/
+
