@@ -15,16 +15,17 @@
 uint32_t CurrentPeriod = 0;
 bool PeriodOneCaptured = false;
 
+//COULD BE A BUG HERE
 void Tachometer_Init(void)
 {
 	SYSCTL_RCGCTIMER_R |= 0x01;      // activate timer0
 	SYSCTL_RCGCGPIO_R |= 0x02;       // activate port B
 	CurrentPeriod = 0xFFFFFFFF;      // first will be wrong
 	PeriodOneCaptured = false;       // set on subsequent
-	GPIO_PORTB_DIR_R &= ~0x40;       // make PB6 input
-	GPIO_PORTB_AFSEL_R |= 0x40;      // enable alt funct on PB6
-	GPIO_PORTB_DEN_R |= 0x40;        // configure PB6 as T0CCP0
-	GPIO_PORTB_PCTL_R = (GPIO_PORTB_PCTL_R&0xF0FFFFFF)+0x07000000;
+	GPIO_PORTB_DIR_R &= ~0x80;       // make PB7 input
+	GPIO_PORTB_AFSEL_R |= 0x80;      // enable alt funct on PB7
+	GPIO_PORTB_DEN_R |= 0x80;        // configure PB7 as T0CCP0
+	GPIO_PORTB_PCTL_R = (GPIO_PORTB_PCTL_R&0x0FFFFFFF)+0x70000000;
 	TIMER0_CTL_R &= ~0x00000001;     // disable timer0A during setup
 	TIMER0_CFG_R = 0x00000004;       // configure for 16-bit capture mode
 	TIMER0_TAMR_R = 0x00000007;      // configure for rising edge event
