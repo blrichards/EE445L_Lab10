@@ -9,4 +9,6 @@
 // so that the ESP8266 knows to forward the data to the Blynk App
 void TM4C_to_Blynk(uint32_t pin, uint32_t value);
 
+void Blynk_to_TM4C(void);
+
 #endif // BLYNK_H_

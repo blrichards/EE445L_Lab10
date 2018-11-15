@@ -10,5 +10,23 @@
 #ifndef MOTOR_H_
 #define MOTOR_H_
 
+#include <stdint.h>
+
+#define MAXRPS 150
+#define MINRPS 30
+#define SPEEDCHANGE 5
+
+extern uint8_t TargetRPS;
+
+typedef enum {
+	ButtonZeroPressed,
+	ButtonOnePressed,
+} SpeedChange;
+
+/**
+ * Handler for when external state such as button push or time change occurs
+ * @param: reason: Reason for why the state changed.
+ */
+void Motor_SpeedShouldUpdate(SpeedChange change);
 
 #endif // MOTOR_H_

@@ -35,11 +35,9 @@
 // Use LM2937-3.3 and two 4.7 uF capacitors to convert USB +5V to 3.3V for the ESP8266
 // http://www.ti.com/lit/ds/symlink/lm2937-3.3.pdf
 #include "Blynk.h"
-#include "AlarmClock.h"
 #include "Buttons.h"
 #include "PLL.h"
 #include "PortF.h"
-#include "Speaker.h"
 #include "ST7735.h"
 #include "Timer.h"
 #include "Timer2.h"
@@ -120,7 +118,7 @@ void SendInformation(void)
 		// ToBlynkHandlers[i]();
 }
 
-int main(void)
+/*int main(void)
 {
 	PLL_Init(Bus80MHz);   // Bus clock at 80 MHz
 	DisableInterrupts();  // Disable interrupts until finished with inits
@@ -162,3 +160,4 @@ int main(void)
         WaitForInterrupt(); // low power mode
     }
 }
+*/

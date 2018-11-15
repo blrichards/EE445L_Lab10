@@ -8,7 +8,6 @@
 // Hardware Configuration: N/A
 
 #include "Timer.h"
-#include "AlarmClock.h"
 #include "ST7735.h"
 #include "tm4c123gh6pm.h"
 #include <stdint.h>
@@ -36,6 +35,7 @@ void SysTick_Handler(void)
     PF2 ^= 0x04;
 }
 
+/*
 void Timer0A_Init(uint32_t reloadValue)
 {
     volatile uint32_t delay;
@@ -74,6 +74,7 @@ void Timer0A_Handler(void)
 
     AlarmClock_DisplayShouldUpdate(TimeChanged);
 }
+*/
 
 void Timer1_Init(uint32_t reloadValue)
 {

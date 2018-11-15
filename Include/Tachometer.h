@@ -10,6 +10,13 @@
 #ifndef TACHOMETER_H_
 #define TACHOMETER_H_
 
+#include <stdint.h>
+#include <stdbool.h>
+
+extern uint32_t CurrentPeriod;
+extern bool PeriodOneCaptured;
+
 void Tachometer_Init(void);
+uint8_t Tach_GetSpeed(void);
 
 #endif // TACHOMETER_H_
