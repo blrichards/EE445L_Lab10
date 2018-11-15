@@ -12,6 +12,9 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
+#include "Timer2.h"
+#include "TImer3.h"
+
 extern uint8_t CurrentSeconds;
 extern uint8_t CurrentMinutes;
 extern uint8_t CurrentHours;

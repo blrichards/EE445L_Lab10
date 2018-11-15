@@ -13,24 +13,15 @@
 #define VIRTUAL_PINS_H_
 
 // From Blynk
-#define NUM_VIRTUAL_PINS_FROM_BLYNK 5
-#define VP_DISPLAY_MODE_SELECTOR 0
-#define VP_FAR_LEFT_SWITCH 1
-#define VP_FAR_RIGHT_SWITCH 2
+#define NUM_VIRTUAL_PINS_FROM_BLYNK 3
+#define VP_DESIRED_MOTOR_SPEED	 	0
+#define VP_KP			 			1
+#define VP_KI				 		2
 
-// To Blynk
-#define NUM_VIRTUAL_PINS_TO_BLYNK 3
-#define TO_BLYNK_VIRTUAL_PIN_OFFSET 70
-#define VP_CURRENT_HOURS 70
-#define VP_CURRENT_MINUTES 71
-#define VP_CURRENT_SECONDS 72
-
-typedef void(*FromBlynkHandler)(int32_t);
-typedef void(*ToBlynkHandler)(void);
+typedef void(*FromBlynkHandler)(float);
 
 void VirtualPins_Init(void);
 
 extern FromBlynkHandler FromBlynkHandlers[NUM_VIRTUAL_PINS_FROM_BLYNK];
-extern ToBlynkHandler ToBlynkHandlers[NUM_VIRTUAL_PINS_TO_BLYNK];
 
 #endif // VIRTUAL_PINS_H_

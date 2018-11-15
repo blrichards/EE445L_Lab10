@@ -7,8 +7,13 @@
 // Date of last revision: 11/14/18
 // Hardware Configuration: N/A
 
+#include <stdint.h>
+
 #ifndef PID_H_
 #define PID_H_
+
+extern float k_Prop;
+extern float k_Int;
 
 void PID_Update(void);
 
