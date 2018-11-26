@@ -25,7 +25,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
+#define TEXT_DISPLAY_OFFSET 25
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define PF2 (*((volatile uint32_t*)0x40025010))
 #define PF1 (*((volatile uint32_t*)0x40025008))
 
@@ -35,17 +39,58 @@ long StartCritical(void); // previous I bit, disable interrupts
 void EndCritical(long sr); // restore I bit to previous value
 void WaitForInterrupt(void); // low power mode
 
+static int16_t interpolateRPS(int16_t value)
+{
+	static const int16_t newMin = ST7735_TFTHEIGHT;
+	static const int16_t newMax = TEXT_DISPLAY_OFFSET;
+	static const int16_t newRange = newMax - newMin;
+	static int16_t oldMin = 0x7FFF;
+	static int16_t oldMax = 0xFFFF;
+	
+	oldMin = MIN(oldMin, value);
+	oldMax = MAX(oldMax, value);
+	int16_t oldRange = oldMax - oldMin;
+	if (oldRange == 0)
+		return newMin;
+	return (((value - oldMin) * newRange) / oldRange) + newMin;
+}
+
 static void collectFromBlynkAndUpdateDisplay()
 {
+	static int16_t oldTargetY[ST7735_TFTWIDTH] = {0};
+	static int16_t oldCurrentY[ST7735_TFTWIDTH] = {0};
+	static uint8_t displayCursor = 0;
+	static bool onceFlag = false;
+	if (!onceFlag) {
+		memset(oldTargetY, interpolateRPS(0), sizeof(oldTargetY) / sizeof(oldTargetY[0]));
+		memset(oldCurrentY, interpolateRPS(0), sizeof(oldCurrentY) / sizeof(oldCurrentY[0]));
+		onceFlag = true;
+	}
+	
+	uint8_t target = TargetRPS;
+	uint8_t current = Tach_GetSpeed();
+	
 	Blynk_to_TM4C();
 	ST7735_SetCursor(0,1); 
-	ST7735_OutString("Current RPS: ");
-	ST7735_OutUDec(Tach_GetSpeed());
-	ST7735_SetCursor(0,2); 
 	ST7735_OutString("Target RPS: ");
-	ST7735_OutUDec(TargetRPS);
-	//TODO - NEED Graphics that will go through and output a line
-	//of the TargetRPS and an output of the current RPS like Lab09
+	ST7735_OutUDec(target);
+	ST7735_SetCursor(0,2); 
+	ST7735_OutString("Current RPS: ");
+	ST7735_OutUDec(current);
+	
+	// Clear old points.
+	ST7735_DrawPixel(displayCursor, oldTargetY[displayCursor], ST7735_BLACK);
+	ST7735_DrawPixel(displayCursor, oldCurrentY[displayCursor], ST7735_BLACK);
+	
+	// Set new.
+	oldTargetY[displayCursor] = interpolateRPS(target);
+	oldCurrentY[displayCursor] = interpolateRPS(current);
+	
+	// Draw new.
+	ST7735_DrawPixel(displayCursor, oldTargetY[displayCursor], ST7735_RED);
+	ST7735_DrawPixel(displayCursor, oldCurrentY[displayCursor], ST7735_WHITE);
+	
+	displayCursor = (displayCursor + 1) % ST7735_TFTWIDTH;
 }
 
 static void updatePID()
@@ -72,7 +117,7 @@ int main(void)
 	// check for receive data from Blynk App every 10ms
 	Timer2_Init(collectFromBlynkAndUpdateDisplay, 799999); 
 	
-	// update display and PID every 1ms
+	// update PID every 1ms
 	Timer3_Init(updatePID, 79999);
 	
   	Output_Init();		// Initialize the ST7735
