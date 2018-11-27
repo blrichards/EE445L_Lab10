@@ -51,7 +51,7 @@ void PID_Update (void)
 	if( totalError < 0 ) totalError = 0;					//Saturate the total errors to make sure there are no bad values
 	if( totalError > MAXRPS) totalError = MAXRPS;
 	
-	PWM0A_Duty(40000 * (((float)(totalError)) / (float)(MAXRPS)));
+	PWM0B_Duty(40000 * (((float)(totalError)) / (float)(MAXRPS)));
 }
 
 //Valvano's code

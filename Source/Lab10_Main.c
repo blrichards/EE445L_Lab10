@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TEXT_DISPLAY_OFFSET 25
+#define TEXT_DISPLAY_OFFSET 40
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define PF2 (*((volatile uint32_t*)0x40025010))
@@ -55,6 +55,12 @@ static int16_t interpolateRPS(int16_t value)
 	return (((value - oldMin) * newRange) / oldRange) + newMin;
 }
 
+static void updatePID()
+{
+	PID_Update();
+	PF1 ^= 0x02; // toggles when running in main
+}
+
 static void collectFromBlynkAndUpdateDisplay()
 {
 	static int16_t oldTargetY[ST7735_TFTWIDTH] = {0};
@@ -67,16 +73,20 @@ static void collectFromBlynkAndUpdateDisplay()
 		onceFlag = true;
 	}
 	
-	uint8_t target = TargetRPS;
-	uint8_t current = Tach_GetSpeed();
+	uint16_t target = TargetRPS;
+	uint16_t current = Tach_GetSpeed();
 	
 	Blynk_to_TM4C();
 	ST7735_SetCursor(0,1); 
 	ST7735_OutString("Target RPS: ");
-	ST7735_OutUDec(target/10);			//0.1 resolution
+	ST7735_OutUDec(target / 10);			//0.1 resolution
+	if (target / 10 < 100)
+		ST7735_OutChar(' ');
 	ST7735_SetCursor(0,2); 
 	ST7735_OutString("Current RPS: ");
-	ST7735_OutUDec(current/10);			//0.1 resolution
+	ST7735_OutUDec(current / 10);			//0.1 resolution
+	if (current / 10 < 100)
+		ST7735_OutChar(' ');
 	
 	// Clear old points.
 	ST7735_DrawPixel(displayCursor, oldTargetY[displayCursor], ST7735_BLACK);
@@ -91,21 +101,22 @@ static void collectFromBlynkAndUpdateDisplay()
 	ST7735_DrawPixel(displayCursor, oldCurrentY[displayCursor], ST7735_WHITE);
 	
 	displayCursor = (displayCursor + 1) % ST7735_TFTWIDTH;
-}
-
-static void updatePID()
-{
-	PID_Update();
-	PF1 ^= 0x02; // toggles when running in main
+	
+	updatePID();
 }
 
 int main(void)
 { 
  	PLL_Init(Bus80MHz);             // Setup PLL for 80 MHz
+	SYSCTL_RCGCGPIO_R |= 0x33; 		// activate port F, E, B, and A
+	while ((SYSCTL_PRGPIO_R & 0x33) != 0x33) {}
 	DisableInterrupts();			// Disable Interrupts during INIT
+  	Output_Init();					// Initialize the ST7735
+	ST7735_SetCursor(0,0);
+	ST7735_OutString("EE445L Lab10");
   	Debug_Init();                 	// Initialize the LEDs
 	Buttons_Init();
-	PWM0A_Init(40000, 30000);			// 10kHz 50% duty cycle on PB6
+	PWM0B_Init(40000, 20000);		// 10kHz 50% duty cycle on PB6
 	Tachometer_Init();
 	VirtualPins_Init();
   	//UART2_Init();               	// Enable Debug Serial Port
@@ -113,17 +124,15 @@ int main(void)
 	ESP8266_Init();
   	ESP8266_Reset();				// Reset the WiFi module
 	ESP8266_SetupWiFi();
-	
+
 	// check for receive data from Blynk App every 10ms
-	Timer2_Init(collectFromBlynkAndUpdateDisplay, 799999); 
+	Timer2_Init(&collectFromBlynkAndUpdateDisplay, 7999999); 
 	
-	// update PID every 1ms
-	Timer3_Init(updatePID, 79999);
+	// update PID every 10ms
+	// Timer3_Init(&updatePID, 799999);
 	
-  	Output_Init();		// Initialize the ST7735
-  	EnableInterrupts();		// Enable Interrupts 
-	ST7735_SetCursor(0,0);
-	ST7735_OutString("EE445L Lab10");
+	
+  	EnableInterrupts();				// Enable Interrupts 
 	
 	while(!PeriodOneCaptured) {}
 

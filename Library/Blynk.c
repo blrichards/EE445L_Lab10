@@ -80,8 +80,6 @@ void TM4C_to_Blynk(uint32_t pin, uint32_t value)
 void Blynk_to_TM4C(void)
 {
 	static char serialBuffer[64];
-    int j;
-    char data;
     // Check to see if a there is data in the RXD buffer
     if (ESP8266_GetMessage(serialBuffer)) { // returns false if no message
         // Read the data from the UART5

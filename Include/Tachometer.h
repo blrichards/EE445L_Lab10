@@ -17,6 +17,6 @@ extern uint32_t CurrentPeriod;
 extern bool PeriodOneCaptured;
 
 void Tachometer_Init(void);
-uint8_t Tach_GetSpeed(void);
+uint16_t Tach_GetSpeed(void);
 
 #endif // TACHOMETER_H_

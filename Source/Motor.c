@@ -11,17 +11,23 @@
 #include "Motor.h"
 #include "Tachometer.h"
 
-uint8_t TargetRPS = MINRPS;
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+uint16_t TargetRPS = MAXRPS;
 
 void Motor_SpeedShouldUpdate(SpeedChange change)
 {
-	uint8_t CurrentRPS = Tach_GetSpeed();
-	if(ButtonZeroPressed){
-		CurrentRPS -= SPEEDCHANGE;
-		TargetRPS = (CurrentRPS <= MINRPS) ? MINRPS : CurrentRPS;
+	switch (change) {
+	case ButtonZeroPressed:
+		TargetRPS = MIN(MAX(TargetRPS - SPEEDCHANGE, MINRPS), MAXRPS);
+		break;
+	case ButtonOnePressed:
+		TargetRPS = MAX(MIN(TargetRPS + SPEEDCHANGE, MAXRPS), MINRPS);
+		break;
 	}
-	else if (ButtonOnePressed){
-		CurrentRPS += SPEEDCHANGE;
-		TargetRPS = (CurrentRPS >= MAXRPS) ? MAXRPS : CurrentRPS;
-	}
+	if (TargetRPS > MAXRPS)
+		TargetRPS = MAXRPS;
+	if (TargetRPS < MINRPS)
+		TargetRPS = MINRPS;
 }
