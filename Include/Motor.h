@@ -12,8 +12,8 @@
 
 #include <stdint.h>
 
-#define MAXRPS 150
-#define MINRPS 30
+#define MAXRPS 1500		//0.1 resolution
+#define MINRPS 300		//0.1 resolution
 #define SPEEDCHANGE 5
 
 extern uint8_t TargetRPS;

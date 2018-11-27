@@ -48,5 +48,5 @@ void Timer0A_Handler(void){
 }
 
 uint8_t Tach_GetSpeed(void) {
-	return 20000000/CurrentPeriod; 				// 1RPS? TODO speed based on input speed
+	return 200000000/CurrentPeriod; 				// 0.1RPS resolution
 }

@@ -73,10 +73,10 @@ static void collectFromBlynkAndUpdateDisplay()
 	Blynk_to_TM4C();
 	ST7735_SetCursor(0,1); 
 	ST7735_OutString("Target RPS: ");
-	ST7735_OutUDec(target);
+	ST7735_OutUDec(target/10);			//0.1 resolution
 	ST7735_SetCursor(0,2); 
 	ST7735_OutString("Current RPS: ");
-	ST7735_OutUDec(current);
+	ST7735_OutUDec(current/10);			//0.1 resolution
 	
 	// Clear old points.
 	ST7735_DrawPixel(displayCursor, oldTargetY[displayCursor], ST7735_BLACK);
@@ -105,7 +105,7 @@ int main(void)
 	DisableInterrupts();			// Disable Interrupts during INIT
   	Debug_Init();                 	// Initialize the LEDs
 	Buttons_Init();
-	PWM0A_Init(8000, 4000);			// 10kHz 50% duty cycle on PB6
+	PWM0A_Init(40000, 30000);			// 10kHz 50% duty cycle on PB6
 	Tachometer_Init();
 	VirtualPins_Init();
   	//UART2_Init();               	// Enable Debug Serial Port

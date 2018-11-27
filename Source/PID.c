@@ -51,5 +51,18 @@ void PID_Update (void)
 	if( totalError < 0 ) totalError = 0;					//Saturate the total errors to make sure there are no bad values
 	if( totalError > MAXRPS) totalError = MAXRPS;
 	
-	PWM0A_Duty(8000 * (((float)(totalError)) / (float)(MAXRPS)));
+	PWM0A_Duty(40000 * (((float)(totalError)) / (float)(MAXRPS)));
 }
+
+//Valvano's code
+/*
+void Timer2A_Handler(void){
+  TIMER2_ICR_R = 0x01;      // acknowledge timer2A
+  Speed = 200000000/Period; // 0.1 rps
+  E = Xstar-Speed;          // 0.1 rps
+  U = U+(3*E)/64;           // discrete integral
+  if(U < 100) U=100;        // Constrain output
+  if(U>39900) U=39900;      // 100 to 39900
+  PWM0A_Duty(U);            // output 
+}
+*/
