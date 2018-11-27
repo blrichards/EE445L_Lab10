@@ -13,8 +13,8 @@
 #include "PWM.h"
 #include "Tachometer.h"
 
-float k_Prop = 0.00125;
-float k_Int = 0.00125;
+float k_Prop = 0.002;
+float k_Int = 0.002;
 float totalIntegralError = 0;
 float motorSpeed = 0;
 float speedInput = 0;
@@ -29,9 +29,9 @@ float totalError = 0;
 */
 void PID_Update (void)
 {
+	
 	speedInput = TargetRPS;						
 	motorSpeed = Tach_GetSpeed();								
-
 
 	if(motorSpeed > MAXRPS) motorSpeed = MAXRPS;			// Saturate the motor speed if too high or too low
 	if(motorSpeed < MINRPS) motorSpeed = MINRPS;
@@ -48,7 +48,7 @@ void PID_Update (void)
 	
 	totalError = propError + totalIntegralError;
 
-	if( totalError < 0 ) totalError = 0;					//Saturate the total errors to make sure there are no bad values
+	if( totalError <= MINRPS ) totalError = MAXRPS;					//Saturate the total errors to make sure there are no bad values
 	if( totalError > MAXRPS) totalError = MAXRPS;
 	
 	PWM0B_Duty(40000 * (((float)(totalError)) / (float)(MAXRPS)));
@@ -63,6 +63,6 @@ void Timer2A_Handler(void){
   U = U+(3*E)/64;           // discrete integral
   if(U < 100) U=100;        // Constrain output
   if(U>39900) U=39900;      // 100 to 39900
-  PWM0A_Duty(U);            // output 
+  PWM0B_Duty(U);            // output 
 }
 */

@@ -18,17 +18,17 @@ FromBlynkHandler FromBlynkHandlers[NUM_VIRTUAL_PINS_FROM_BLYNK] = {0};
 
 static void updateDesiredMotorSpeed(float speed)
 {
-	TargetRPS = (uint8_t)speed;
+	//TargetRPS = (uint16_t)speed;
 }
 
 static void updateKI(float ki)
 {
-	k_Int = ki;
+	//k_Int = ki;
 }
 
 static void updateKP(float kp)
 {
-	k_Prop = kp;
+	//k_Prop = kp;
 }
 
 static void fromBlynkInit(void)

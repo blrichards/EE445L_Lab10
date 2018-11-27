@@ -9,6 +9,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "Motor.h"
 #include "Tachometer.h"
 #include "tm4c123gh6pm.h"
 
@@ -70,6 +71,7 @@ void Tachometer_Init(void)
 
 void Timer0A_Handler(void)
 {
+	
 	TIMER0_ICR_R = 0x00000004;       // acknowledge timer0A
 	GPIO_PORTF_DATA_R ^= 0x08;			// heartbeat
 	CurrentPeriod = (First - TIMER0_TAR_R) & 0x00FFFFFF;
@@ -81,5 +83,8 @@ void Timer0A_Handler(void)
 };
 
 uint16_t Tach_GetSpeed(void) {
-	return 200000000/CurrentPeriod; 				// 0.1RPS resolution
+	uint16_t currentSpeed =  200000000/CurrentPeriod;
+	if(currentSpeed > MAXRPS) return MAXRPS;
+	if(currentSpeed < MINRPS) return MINRPS;
+	return currentSpeed; 				// 0.1RPS resolution
 }

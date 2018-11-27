@@ -27,6 +27,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+uint8_t displayCursor = 0;
+int16_t oldTargetY[ST7735_TFTWIDTH] = {120};
+int16_t oldCurrentY[ST7735_TFTWIDTH] = {120};
+
 #define TEXT_DISPLAY_OFFSET 40
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -63,37 +67,26 @@ static void updatePID()
 
 static void collectFromBlynkAndUpdateDisplay()
 {
-	static int16_t oldTargetY[ST7735_TFTWIDTH] = {0};
-	static int16_t oldCurrentY[ST7735_TFTWIDTH] = {0};
-	static uint8_t displayCursor = 0;
-	static bool onceFlag = false;
-	if (!onceFlag) {
-		memset(oldTargetY, interpolateRPS(0), sizeof(oldTargetY) / sizeof(oldTargetY[0]));
-		memset(oldCurrentY, interpolateRPS(0), sizeof(oldCurrentY) / sizeof(oldCurrentY[0]));
-		onceFlag = true;
-	}
-	
-	uint16_t target = TargetRPS;
 	uint16_t current = Tach_GetSpeed();
 	
-	Blynk_to_TM4C();
+	//Blynk_to_TM4C();
 	ST7735_SetCursor(0,1); 
 	ST7735_OutString("Target RPS: ");
-	ST7735_OutUDec(target / 10);			//0.1 resolution
-	if (target / 10 < 100)
-		ST7735_OutChar(' ');
+	ST7735_OutUDec(TargetRPS / 10);			//0.1 resolution
+	if (TargetRPS / 10 < 100)
+		ST7735_OutString("     ");
 	ST7735_SetCursor(0,2); 
 	ST7735_OutString("Current RPS: ");
 	ST7735_OutUDec(current / 10);			//0.1 resolution
 	if (current / 10 < 100)
-		ST7735_OutChar(' ');
+		ST7735_OutString("     ");
 	
 	// Clear old points.
 	ST7735_DrawPixel(displayCursor, oldTargetY[displayCursor], ST7735_BLACK);
 	ST7735_DrawPixel(displayCursor, oldCurrentY[displayCursor], ST7735_BLACK);
 	
 	// Set new.
-	oldTargetY[displayCursor] = interpolateRPS(target);
+	oldTargetY[displayCursor] = interpolateRPS(TargetRPS);
 	oldCurrentY[displayCursor] = interpolateRPS(current);
 	
 	// Draw new.

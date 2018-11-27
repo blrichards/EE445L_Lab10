@@ -14,7 +14,7 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-uint16_t TargetRPS = MAXRPS;
+uint16_t TargetRPS = MAXRPS / 2;
 
 void Motor_SpeedShouldUpdate(SpeedChange change)
 {

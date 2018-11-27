@@ -12,9 +12,9 @@
 
 #include <stdint.h>
 
-#define MAXRPS 1500		//0.1 resolution
-#define MINRPS 500		//0.1 resolution
-#define SPEEDCHANGE 50
+#define MAXRPS 500		//0.1 resolution
+#define MINRPS 300		//0.1 resolution
+#define SPEEDCHANGE 10
 
 extern uint16_t TargetRPS;
 
