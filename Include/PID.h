@@ -12,6 +12,11 @@
 #ifndef PID_H_
 #define PID_H_
 
+#define K_PROP_MAX 0.0025
+#define K_PROP_MIN 0.0015
+#define K_INT_MAX 0.0025
+#define K_INT_MIN 0.0015
+
 extern float k_Prop;
 extern float k_Int;
 

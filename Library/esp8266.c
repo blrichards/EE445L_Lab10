@@ -33,7 +33,7 @@ char pass[32] = "dUQQE?&W44x7";
 //char ssid[32] = "Ben's iPhone";
 //char pass[32] = "Benton97";
 // create your own Blynk server app and edit this next line with your authentication code
-char auth[64] = "3f0bf7a9cf7c4d48bd59794e78c192d4";
+char auth[64] = "027cf4a34c384fedb140fc35b2dce776";
 
 #define UART_FR_RXFF 0x00000040 // UART Receive FIFO Full
 #define UART_FR_TXFF 0x00000020 // UART Transmit FIFO Full

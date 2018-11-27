@@ -13,8 +13,8 @@
 #include "PWM.h"
 #include "Tachometer.h"
 
-float k_Prop = 0.002;
-float k_Int = 0.002;
+float k_Prop = 0.0015;
+float k_Int = 0.0015;
 float totalIntegralError = 0;
 float motorSpeed = 0;
 float speedInput = 0;

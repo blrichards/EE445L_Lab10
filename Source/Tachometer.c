@@ -64,7 +64,7 @@ void Tachometer_Init(void)
 	TIMER0_IMR_R |= 0x00000004;      // enable capture match interrupt
 	TIMER0_ICR_R = 0x00000004;       // clear timer0A capture match flag
 	TIMER0_CTL_R |= 0x00000001;      // timer0A 24-b, +edge, interrupts
-	NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000; //Timer0A=priority 2
+	NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x00000000; //Timer0A=priority 0
 	NVIC_EN0_R = 1<<19;              // enable interrupt 19 in NVIC
 }
 

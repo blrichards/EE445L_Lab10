@@ -96,7 +96,8 @@ void Blynk_to_TM4C(void)
         // Rip the 3 fields out of the CSV data. The sequence of data from the 8266 is:
         // Pin #, Integer Value, Float Value.
 		uint32_t pinNumber = atoi(strtok(serialBuffer, ","));
-		uint32_t pinValue = atoi(strtok(NULL, ","));
+		atoi(strtok(NULL, ","));
+		float pinValue = atof(strtok(serialBuffer, ","));
 		if (FromBlynkHandlers[pinNumber])
 			FromBlynkHandlers[pinNumber](pinValue);
 
